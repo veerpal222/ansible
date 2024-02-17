@@ -1,0 +1,5 @@
+---
+
+pack: nfs-utils 
+service: nfs-server
+# vars file for nfs

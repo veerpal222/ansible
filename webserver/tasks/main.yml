@@ -1,0 +1,17 @@
+---
+    - name: Install "{{user.dev.package}}"
+      apt:
+        name: "{{user.dev.package}}"
+        state: present
+      register: output
+      when: ansible_facts.distribution == "Ubuntu"
+
+    - name: Copy index.html template
+      template:
+        src: index.j2
+        dest: /var/www/html/index.html
+      notify: startservicedev
+
+    - name: Display output
+      debug:
+        var: output

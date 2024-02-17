@@ -1,0 +1,34 @@
+---
+      - name: installing nfs
+        yum:
+            name: "{{pack}}"
+            state: present
+
+      - name: enabling nfs service
+        service:
+            name: "{{service}}"
+            state: started
+            enabled: true
+
+      - name: making dir
+        file:
+            path: /root/client
+            state: directory
+            owner: root
+            group: root
+            mode: '2755'
+
+      - name: adding  file for config of nfs
+        file:
+            path: /etc/exports.d/games.exports
+            state: touch
+
+      - name: entry in exports file
+        template:
+            src: config.j2
+            dest: /etc/exports.d/games.exports
+
+      - name: restarting nfs
+        command: "exportfs -r"
+
+# tasks file for nfs
