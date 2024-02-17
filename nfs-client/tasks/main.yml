@@ -1,0 +1,30 @@
+---
+      - name: installing nfs cleint package
+        apt:
+            name: nfs-common
+            state: present
+
+      - name: making dir for mount
+        file:
+            path: /client
+            state: directory
+
+      - name: entry in fstab file
+        template:
+            src: nfsclient.j2
+            dest: /etc/fstab
+
+      - name: refreshing fstab file
+        command: "mount -a"
+
+      - name: creating dir in newly mounted dir
+        file:
+           path: /client/
+           state: directory
+        register: output
+
+      - name: displaying output
+        debug:
+           var: output
+
+# tasks file for nfs-client

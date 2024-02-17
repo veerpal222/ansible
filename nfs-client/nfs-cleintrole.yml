@@ -1,0 +1,5 @@
+---
+- name: Nfs client role
+  hosts: dev
+  roles: 
+    - nfs-client
