@@ -1,0 +1,54 @@
+---
+    - name: Updating ubuntu machine
+      command: "apt update"
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Run MySQL Docker container
+      docker_container:
+        name: data1
+        image: mysql
+        env:
+          MYSQL_ROOT_PASSWORD: "{{DB_PASS}}"
+          MYSQL_DATABASE: "{{DB_NAME}}"
+
+    - name: Create script file on host side
+      file:
+        path: ~/script.sh
+        state: touch
+        mode: '0755'
+
+    - name: Copy script file to Docker host
+      copy:
+        src: script.j2
+        dest: ~/script.sh
+
+    - name: Run script to get IP
+      command: "~/script.sh"
+      register: script_output
+
+    - set_fact:
+        container_ip: "script_output.stdout"
+
+    - name: Debug script output
+      debug:
+        msg: "ip is {{script_output.stdout}}"
+
+    - name: Run wordpress Docker container
+      docker_container:
+        name: word
+        image: wordpress
+        env:
+          WORDPRESS_DB_HOST: "{{script_output.stdout}}"
+          WORDPRESS_DB_NAME:  "{{DB_NAME}}"
+          WORDPRESS_DB_PASSWORD: "{{DB_PASS}}"
+          WORDPRESS_DB_USER: root
+        ports:
+          8082:80
+
+
+
+# tasks file for wordpress
