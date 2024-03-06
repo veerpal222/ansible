@@ -8,7 +8,7 @@ Requirements
 
 This role is only for ubuntu
 Before play this role, install docker module in your ansible machine
-command: ansible-galaxy collection install community.docker
+command: ansible-galaxy collection install community.docker  && ansible-galaxy collection install community.general
 
 Role Variables
 --------------
